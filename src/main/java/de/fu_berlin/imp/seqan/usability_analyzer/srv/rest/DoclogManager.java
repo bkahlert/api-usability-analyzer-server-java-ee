@@ -295,6 +295,8 @@ public class DoclogManager {
 			return null;
 		}
 		Object typedKey = ID.isValid(key) ? new ID(key) : new Fingerprint(key);
+		LOGGER.info("Create " + Doclog.class.getSimpleName() + " " + typedKey
+				+ ((id != null) ? " (ID: " + id + ")" : ""));
 
 		if (ip == null || proxyIp == null) {
 			if (request.getHeader("HTTP_X_FORWARDED_FOR") == null) {
@@ -410,6 +412,8 @@ public class DoclogManager {
 		File file = getDoclogLocation(context, typedKey);
 		try {
 			JAXBUtils.marshall(doclog, file);
+			LOGGER.info("Created " + Doclog.class.getSimpleName() + " "
+					+ typedKey);
 			return doclogRecord;
 		} catch (Exception e) {
 			LOGGER.error(doclog + " could not be written to " + file);
@@ -477,7 +481,6 @@ public class DoclogManager {
 
 	private static void mergeDoclogs(ServletContext context, File srcFile,
 			File destFile) throws JAXBException, IOException {
-		LOGGER.info("Merging " + srcFile + " and " + destFile);
 		if (!srcFile.isFile())
 			return;
 		try {
@@ -569,6 +572,8 @@ public class DoclogManager {
 
 		try {
 			typedKey = getDoclog(context, typedKey).getKey();
+		} catch (NullPointerException e) {
+			return Boolean.FALSE.toString();
 		} catch (Exception e) {
 			LOGGER.error("Can't read " + Doclog.class.getSimpleName() + " of "
 					+ key, e);

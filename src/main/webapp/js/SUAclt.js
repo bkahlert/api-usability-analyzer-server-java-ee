@@ -268,7 +268,7 @@ var dateFormat=function(){var token=/d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloS
         throw "md5 unavailable, please get it from http://github.com/wbond/md5-js/";
       }
     }
-return "test2";
+
     // And, since I'm lazy, calling `$.fingerprint()` will return the hash
     // right away, without the need for any other calls.
     return _md5();
@@ -355,9 +355,6 @@ return'"'+string+'"';};})(jQuery);
 		var lastFingerprint = getLastFingerprint();
 		var fingerprint = $.fingerprint();
 		
-		// TODO
-		alert("old: " + lastFingerprint + "; new: " + fingerprint);
-		
 		if(lastFingerprint != fingerprint) {
 			$.ajax({
 				url: ('https:' == document.location.protocol ? 'https://' : 'http://') + "${HOST}${CONTEXT_PATH}/rest/fingerprint/!" + lastFingerprint + "/associate/!" + fingerprint,
@@ -365,7 +362,9 @@ return'"'+string+'"';};})(jQuery);
 				dataType: "script"
 			});
 			setLastFingerprint(fingerprint);
+			return true;
 		}
+		return false;
 	}
 	
 	function log(e) {
@@ -389,48 +388,50 @@ return'"'+string+'"';};})(jQuery);
 	}
 	
 	$(document).ready(function() {
-		updateFingerprint();
-		log("ready");
-		
-		var token = $.parseQuery().token;
-		if(token) log("survey-" + token);
+		var delay = updateFingerprint() ? 500 : 10;
+		window.setTimeout(function() {
+			log("ready");
+			
+			var token = $.parseQuery().token;
+			if(token) log("survey-" + token);
 
-		$("a").click(function(e) {
-			log("link-" + this.href);
-		});
-		
-		$("input").keydown(function(e) {
-			var id = this.id ? this.id : (this.name ? this.name : "");
-			log("typing-" + id + "-" + $(this).val());
-		});
-		
-		$("textarea").keydown(function(e) {
-			var id = this.id ? this.id : (this.name ? this.name : "");
-			log("typing-" + id + "-" + $(this).val());
-		});
-		
-		$(window).focus(function() {
-			log("focus")
-	    });
-		
-		var scrollTimerID;
-		$(window).scroll(function() {
-			if(scrollTimerID) window.clearTimeout(scrollTimerID);
-			scrollTimerID = window.setTimeout(function() { log("scroll"); }, 2000);
-		});
-		
-		var resizeTimerID;
-		$(window).resize(function() {
-			if(resizeTimerID) window.clearTimeout(resizeTimerID);
-			resizeTimerID = window.setTimeout(function() { log("resize"); }, 1500);
-		});
+			$("a").click(function(e) {
+				log("link-" + this.href);
+			});
+			
+			$("input").keydown(function(e) {
+				var id = this.id ? this.id : (this.name ? this.name : "");
+				log("typing-" + id + "-" + $(this).val());
+			});
+			
+			$("textarea").keydown(function(e) {
+				var id = this.id ? this.id : (this.name ? this.name : "");
+				log("typing-" + id + "-" + $(this).val());
+			});
+			
+			$(window).focus(function() {
+				log("focus")
+		    });
+			
+			var scrollTimerID;
+			$(window).scroll(function() {
+				if(scrollTimerID) window.clearTimeout(scrollTimerID);
+				scrollTimerID = window.setTimeout(function() { log("scroll"); }, 2000);
+			});
+			
+			var resizeTimerID;
+			$(window).resize(function() {
+				if(resizeTimerID) window.clearTimeout(resizeTimerID);
+				resizeTimerID = window.setTimeout(function() { log("resize"); }, 1500);
+			});
 
-	    $(window).blur(function() {
-	    	log("blur")
-	    });
-	    
-	    $(window).unload(function() {
-			log("unload");
-		});
+		    $(window).blur(function() {
+		    	log("blur")
+		    });
+		    
+		    $(window).unload(function() {
+				log("unload");
+			});
+		}, delay);
 	});
 })(jQuery);
