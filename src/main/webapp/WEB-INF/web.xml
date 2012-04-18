@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+	<display-name>Vaadin Web Application</display-name>
+	<context-param>
+		<description>Vaadin production mode</description>
+		<param-name>productionMode</param-name>
+		<param-value>${vaadin.productionmode}</param-value>
+	</context-param>
+	<context-param>
+		<description>Location to where to save doclog files</description>
+		<param-name>doclogLocation</param-name>
+		<param-value>${SUAsrv.doclog.dir}</param-value>
+	</context-param>
+	<context-param>
+		<description>Location to where to save diff files</description>
+		<param-name>diffLocation</param-name>
+		<param-value>${SUAsrv.diff.dir}</param-value>
+	</context-param>
+	<servlet>
+		<servlet-name>Vaadin Application Servlet</servlet-name>
+		<servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
+		<init-param>
+			<description>Vaadin application class to start</description>
+			<param-name>application</param-name>
+			<param-value>de.fu_berlin.imp.seqan.usability_analyzer.srv.SUAsrvApplication</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Vaadin Application Servlet</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>Static Servlet</servlet-name>
+		<servlet-class>de.fu_berlin.imp.seqan.usability_analyzer.srv.servlets.StaticServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Static Servlet</servlet-name>
+		<url-pattern>/static/*</url-pattern>
+	</servlet-mapping>
+	<filter>
+		<filter-name>Static Filter</filter-name>
+		<filter-class>de.fu_berlin.imp.seqan.usability_analyzer.srv.StaticFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>Static Filter</filter-name>
+		<url-pattern>/static/*</url-pattern>
+	</filter-mapping>
+	<filter>
+		<filter-name>SRVclt Filter</filter-name>
+		<filter-class>de.fu_berlin.imp.seqan.usability_analyzer.srv.SRVcltFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>SRVclt Filter</filter-name>
+		<url-pattern>/static/*</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>Jersey REST Service</servlet-name>
+		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>com.sun.jersey.config.property.packages</param-name>
+			<param-value>de.fu_berlin.imp.seqan.usability_analyzer.srv.rest</param-value>
+		</init-param>
+		<init-param>
+			<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
+			<param-value>de.fu_berlin.imp.seqan.usability_analyzer.srv.rest.QueryFormMerger</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Jersey REST Service</servlet-name>
+		<url-pattern>/rest/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>DiffServlet</servlet-name>
+		<servlet-class>de.fu_berlin.imp.seqan.usability_analyzer.srv.servlets.DiffServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>DiffServlet</servlet-name>
+		<url-pattern>/diff/*</url-pattern>
+	</servlet-mapping>
+
+</web-app>

@@ -1,0 +1,14 @@
+/* ===== Primary Styles ========================================================
+   Author: Björn Kahlert
+   ========================================================================== */
+
+html .hero-unit h1 {
+	font-size: 72px;
+	line-height: 1.2em;
+}
+
+table caption {
+	text-align: left;
+	position: absolute;
+	top: -9999px;
+}
