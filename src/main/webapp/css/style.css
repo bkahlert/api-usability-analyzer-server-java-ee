@@ -1,5 +1,5 @@
 /* ===== Primary Styles ========================================================
-   Author: Bj√∂rn Kahlert
+   Author: Björn Kahlert
    ========================================================================== */
 
 html .hero-unit h1 {
@@ -7,8 +7,28 @@ html .hero-unit h1 {
 	line-height: 1.2em;
 }
 
+.hero-unit p,
+.hero-unit li {
+	font-size: 18px;
+	font-weight: 200;
+	line-height: 27px;
+	color: inherit;
+}
+
+table {
+	border: 0;
+}
+
 table caption {
 	text-align: left;
 	position: absolute;
 	top: -9999px;
+}
+
+table td {
+	padding: 10px;
+}
+
+.no-js .script {
+	display: none;
 }

@@ -2,6 +2,9 @@ package de.fu_berlin.imp.seqan.usability_analyzer.srv.model;
 
 import java.util.regex.Pattern;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(namespace = "de.fu_berlin.imp.seqan.usability_analyzer.srv")
 public class ID implements Comparable<ID> {
 
 	public static final Pattern PATTERN = Pattern.compile("^[A-Za-z\\d]+$");

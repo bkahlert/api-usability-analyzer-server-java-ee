@@ -23,6 +23,21 @@ public class FingerprintManager {
 	private static final Logger LOGGER = Logger
 			.getLogger(FingerprintManager.class);
 
+	@GET
+	@Path("{fingerprint}")
+	@Produces({ "text/javascript", MediaType.TEXT_PLAIN })
+	public String getID(@Context ServletContext context,
+			@PathParam("fingerprint") Fingerprint fingerprint) {
+		try {
+			ID id = DoclogManager.getMapping(context, fingerprint);
+			return id != null ? id.toString() : null;
+		} catch (JAXBException e) {
+			return null;
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
 	/**
 	 * Associates a {@link Fingerprint}'s mapped {@link ID} with another
 	 * {@link Fingerprint}

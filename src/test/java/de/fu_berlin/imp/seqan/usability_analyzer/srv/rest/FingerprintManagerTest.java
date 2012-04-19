@@ -12,6 +12,7 @@ import javax.ws.rs.core.UriBuilder;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
@@ -32,6 +33,21 @@ public class FingerprintManagerTest {
 	}
 
 	/**
+	 * @param fingerprint
+	 * @return
+	 */
+	private String getID(Fingerprint fingerprint) {
+		WebResource doclogService = getFingerprintService();
+
+		try {
+			return doclogService.path(fingerprint.toString())
+					.accept(MediaType.TEXT_PLAIN).get(String.class);
+		} catch (UniformInterfaceException e) {
+			return null;
+		}
+	}
+
+	/**
 	 * Associates a {@link Fingerprint}'s mapped {@link ID} with another
 	 * {@link Fingerprint}
 	 * 
@@ -47,6 +63,22 @@ public class FingerprintManagerTest {
 		return Boolean.valueOf(doclogService.path(fingerprint1.toString())
 				.path("associate").path(fingerprint2.toString())
 				.accept(MediaType.TEXT_PLAIN).get(String.class));
+	}
+
+	@Test
+	public void testGetID() {
+		Fingerprint unmappedFingerprint = DoclogManagerTest
+				.getTestFingerprint();
+		assertNull(getID(unmappedFingerprint));
+
+		Fingerprint mappedFingerprint = DoclogManagerTest.getTestFingerprint();
+		ID id = DoclogManagerTest.getTestID();
+		assertEquals(DoclogManagerTest.DOCLOG_RECORD,
+				DoclogManagerTest.createDoclogRecord(mappedFingerprint, id,
+						DoclogManagerTest.DOCLOG_RECORD));
+
+		assertNull(getID(unmappedFingerprint));
+		assertEquals(id.toString(), getID(mappedFingerprint));
 	}
 
 	@Test
