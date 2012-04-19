@@ -45,7 +45,8 @@ var dateFormat=function(){var token=/d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloS
  * 3) SUAclt.js checks if the browser's fingerprint has changed.
  *    Due to the same origin policy (example.com != dalak.imp.fu-berlin.de) SUAclt.js can't access
  *    a locally saved old fingerprint.
- *    Therefore... (inspired by http://www.nczonline.net/blog/2010/09/07/learning-from-xauth-cross-domain-localstorage/)
+ *    Therefore... (inspired by http://www.nczonline.net/blog/2010/09/07/learning-from-xauth-cross-domain-localstorage/
+ *                          and http://www.ibm.com/developerworks/web/library/wa-crossdomaincomm/index.html?ca=drs-#N1019B)
  *    1) SUAclt.js inserts an invisible iframe and points to https://dalak.imp.fu-berlin.de/SUAsrv/static/SUAsrv.html?example.com
  *    2) In the context of https://dalak.imp.fu-berlin.de SUAsrv.html saves the current fingerprint as the last known
  *       fingerprint in the local storage (fallback to userData in IE6/7/8).
