@@ -149,7 +149,7 @@ var dateFormat=function(){var token=/d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloS
 			iframe.hover(function() { iframe.css({ opacity: 0.7 }); }, function() { iframe.css({ opacity: 0.2 }); });
 		}
 		var returnURI = window.location.protocol + "//" + window.location.host + "?noSUA";
-		iframe.attr("src", encodeURI(("${HOST}".indexOf(":") >= 0) ? "http://" : "https://") + "${HOST}${CONTEXT_PATH}/static/SUAsrv.html?" + returnURI);
+		iframe.attr("src", (("${HOST}".indexOf(":8080") >= 0) ? "http://" : "https://") + "${HOST}${CONTEXT_PATH}/static/SUAsrv.html?" + encodeURI(returnURI));
 		iframe.load(function() {
 			fingerprints = iframe[0].contentWindow.name.split("-");
 			if(fingerprints.length == 3) {

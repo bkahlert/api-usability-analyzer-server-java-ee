@@ -127,10 +127,11 @@ body {
 					</p>
 				</div>
 				<div class="span2">
-					<h2>
-						<a href="/SUAsrv/static/SUAsrv.html">Debug</a>
-					</h2>
-					<iframe src="/SUAsrv/static/SUAsrv.html" style="width: 100%; border: 0;"></iframe>
+					<script type="text/javascript">
+					var debugUrl = (("${HOST}".indexOf(":8080") >= 0) ? "http://" : "https://") + "${HOST}${CONTEXT_PATH}/static/SUAsrv.html";
+					document.write('<h2><a href="' + debugUrl + '">Debug</a>');
+					document.write('<iframe src="' + debugUrl + '" style="width: 100%; border: 0;"></iframe>');
+					</script>
 				</div>
 			</div>
 		</div>

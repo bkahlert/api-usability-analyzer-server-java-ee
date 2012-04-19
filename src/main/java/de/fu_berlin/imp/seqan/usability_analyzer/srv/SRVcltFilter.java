@@ -39,7 +39,8 @@ public class SRVcltFilter implements Filter {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) resp;
 		String uri = request.getRequestURI();
-		if (uri.contains("SUAclt") || uri.contains("SUAsrv")) {
+		if (uri.contains("register.html") || uri.contains("SUAclt")
+				|| uri.contains("SUAsrv")) {
 			// process request as usual but buffer the output
 			OutputStream out = response.getOutputStream();
 			BufferedServletResponse wrapper = new BufferedServletResponse(

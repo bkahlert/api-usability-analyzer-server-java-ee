@@ -49,7 +49,7 @@
 			$(".SUAlastFingerprint").html(lastFingerprint);
 			$(".SUAfingerprint").html(fingerprint);
 			$.ajax({
-				url: (("${HOST}".indexOf(":") >= 0) ? "http://" : "https://") + "${HOST}${CONTEXT_PATH}/rest/fingerprint/!" + fingerprint,
+				url: (("${HOST}".indexOf(":8080") >= 0) ? "http://" : "https://") + "${HOST}${CONTEXT_PATH}/rest/fingerprint/!" + fingerprint,
 				type: "GET",
 				dataType: "text",
 				success: function(data, status) {
