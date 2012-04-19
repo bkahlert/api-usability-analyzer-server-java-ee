@@ -128,7 +128,7 @@ body {
 				</div>
 				<div class="span2">
 					<script type="text/javascript">
-					var debugUrl = (("${HOST}".indexOf(":8080") >= 0) ? "http://" : "https://") + "${HOST}${CONTEXT_PATH}/static/SUAsrv.html";
+					var debugUrl = (("${HOST}".indexOf(":") >= 0) ? "http://" : "https://") + "${HOST}${CONTEXT_PATH}/static/SUAsrv.html";
 					document.write('<h2><a href="' + debugUrl + '">Debug</a>');
 					document.write('<iframe src="' + debugUrl + '" style="width: 100%; border: 0;"></iframe>');
 					</script>

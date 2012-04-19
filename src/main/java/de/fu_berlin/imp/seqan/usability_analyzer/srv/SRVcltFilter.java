@@ -52,9 +52,12 @@ public class SRVcltFilter implements Filter {
 
 			// the wrapper now contains the normally shipped data
 			// let's modify it
+			String host = request.getServerName();
+			int port = request.getServerPort();
+
 			String data = new String(wrapper.getData());
-			data = data.replace("${HOST}", request.getServerName() + ":"
-					+ request.getServerPort());
+			data = data.replace("${HOST}", host
+					+ ((port == 80 || port == 443) ? "" : ":" + port));
 			data = data.replace("${CONTEXT_PATH}", context.getContextPath());
 			data = data.replace("${productionMode}",
 					context.getInitParameter("productionMode"));
