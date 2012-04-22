@@ -7,6 +7,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ StaticFilterTest.class,
 		de.fu_berlin.imp.seqan.usability_analyzer.srv.model.AllTests.class,
 		de.fu_berlin.imp.seqan.usability_analyzer.srv.clt.AllTests.class,
+		de.fu_berlin.imp.seqan.usability_analyzer.srv.data.AllTests.class,
 		de.fu_berlin.imp.seqan.usability_analyzer.srv.rest.AllTests.class })
 public class AllTests {
 
