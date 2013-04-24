@@ -23,6 +23,28 @@
 /*
  * Author: Björn Kahlert
  */
+window["SUAactivateLogging"] = function(fingerprint) {
+	$.ajax({
+		url: (("${HOST}".indexOf(":") >= 0) ? "http://" : "https://") + "${HOST}${CONTEXT_PATH}/rest/fingerprint/!" + fingerprint,
+		type: "GET",
+		dataType: "jsonp",
+		success: function(data, status) {
+			if(data.identifier) {
+				$(".SUAid").html(data.identifier);
+				document.title = "SeqAn ID: " + data.identifier;
+			}
+        },
+        error: function(request, status, error) {
+            alert(request.responseText);
+            alert(status);
+            alert(error);
+        }    
+	});
+}
 $(document).ready(function() {
-	$(".SUAid").html($.parseQuery().id);
+	var id = $.parseQuery().id;
+	if($.parseQuery().SUAid) id = $.parseQuery().SUAid;
+	if(id) {
+		$(".SUAid").html(id);
+	}
 });

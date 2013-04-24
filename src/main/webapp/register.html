@@ -49,7 +49,8 @@ body {
 				<h1>No JavaScript!</h1>
 				<p>
 					If you want to help us improving SeqAn we ask you to <strong>enable
-						JavaScript</strong>.<br/>It is sufficient to enable JavaScript for the following pages (<strong>http</strong> and <strong>https</strong>):
+						JavaScript</strong>.<br />It is sufficient to enable JavaScript for the
+					following pages (<strong>http</strong> and <strong>https</strong>):
 				</p>
 				<ul>
 					<li>dalak.imp.fu-berlin.de</li>
@@ -59,15 +60,14 @@ body {
 			</noscript>
 			<div class="script">
 				<h1>
-					Thank you<br />
-					<span style="font-size: 0.8em;">for helping us to improve
-						SeqAn!</span>
+					Thank you<br /> <span style="font-size: 0.8em;">for helping
+						us to improve SeqAn!</span>
 				</h1>
 				<p>
 					Your browser's fingerprint <span class="fingerprint"></span> was
-					successfully linked to your permanent ID
-					<code><span class="SUAid"></span></code>. <br> Your ID is saved on your computer in your home
-					directory in a file called <code>.SUA.ID</code>.
+					successfully linked to your permanent ID <code><span class="SUAid"></span></code>.<br>Your ID is saved on your computer in your home directory
+					in a file called
+					<code>.SUA.ID</code>.
 				</p>
 				<table>
 					<caption>Typical ID File Locations</caption>
@@ -104,7 +104,8 @@ body {
 						simplifies the development of new software tools with a minimal
 						loss of performance.</p>
 					<p>
-						<a class="btn" href="http://www.seqan.de/">View details &raquo;</a>
+						<a class="btn" href="http://www.seqan.de/">View details
+							&raquo;</a>
 					</p>
 				</div>
 				<div class="span1">
@@ -121,16 +122,21 @@ body {
 						biomedical sciences to have easy access to such tools via a
 						distribution and execution platform.</p>
 					<p>
-						<a class="btn"
-							href="http://www.seqan-biostore.de/">View
+						<a class="btn" href="http://www.seqan-biostore.de/">View
 							details &raquo;</a>
 					</p>
 				</div>
 				<div class="span2">
 					<script type="text/javascript">
-					var debugUrl = (("${HOST}".indexOf(":") >= 0) ? "http://" : "https://") + "${HOST}${CONTEXT_PATH}/static/SUAsrv.html";
-					document.write('<h2><a href="' + debugUrl + '">Debug</a>');
-					document.write('<iframe src="' + debugUrl + '" style="width: 100%; border: 0;"></iframe>');
+						var debugUrl = (("${HOST}".indexOf(":") >= 0) ? "http://"
+								: "https://")
+								+ "${HOST}${CONTEXT_PATH}/static/SUAsrv.html";
+						document
+								.write('<h2><a href="' + debugUrl + '">Debug</a>');
+						document
+								.write('<iframe src="'
+										+ debugUrl
+										+ '" style="width: 100%; border: 0;"></iframe>');
 					</script>
 				</div>
 			</div>
@@ -139,7 +145,7 @@ body {
 		<hr>
 
 		<footer>
-			<p>&copy; 2011-2012 Björn Kahlert, Freie Universität Berlin</p>
+			<p>&copy; 2011-2013 Björn Kahlert, Freie Universität Berlin</p>
 		</footer>
 
 	</div>
@@ -148,25 +154,11 @@ body {
 		src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 	<script>
 		window.jQuery
-				|| document
-						.write(
-								'<script src="js/libs/jquery-1.7.1.min.js"><\/script>')
+				|| document.write(
+						'<script src="js/libs/jquery-1.7.1.min.js"><\/script>')
 	</script>
 	<script src="js/libs/bootstrap/bootstrap.min.js"></script>
+	<script src="js/SUAclt.js"></script>
 	<script src="js/script.js"></script>
-	<script type="text/javascript">
-		(
-								function() {
-									var SUAclt = document
-											.createElement('script');
-									SUAclt.type = 'text/javascript';
-									SUAclt.src = ('https:' == document.location.protocol ? 'https://'
-											: 'http://')
-											+ window.location.host + '/SUAsrv/static/js/SUAclt.js';
-									var s = document
-											.getElementsByTagName('script')[0];
-									s.parentNode.insertBefore(SUAclt, s);
-								})();
-	</script>
 </body>
 </html>

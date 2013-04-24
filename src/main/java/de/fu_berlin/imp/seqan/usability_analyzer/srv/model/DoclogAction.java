@@ -8,6 +8,6 @@ public enum DoclogAction {
 			if (doclogAction.toString().equalsIgnoreCase(doclogActionString))
 				return doclogAction;
 		}
-		return null;
+		return UNKNOWN;
 	}
 }

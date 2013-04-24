@@ -2,13 +2,13 @@
 <html class="no-js" lang="en">
 <head>
 	<meta charset="utf-8">
+	<meta http-equiv="expires" content="Sat, 01 Dec 2001 00:00:00 GMT">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<style>
 	body {
 	  margin: 0;
 	  padding: 0;
 	  background-color: #fff;
-	  font-size: 0.5em;
 	}
 	dl {
 	  margin: 0;
@@ -18,11 +18,11 @@
 </head>
 <body>
 <dl>
-	<dt>Last Fingerprint</dt>
+	<dt>Last Known Fingerprint</dt>
 	<dd class="SUAlastFingerprint"><em>none</em></dd>
-	<dt>Fingerprint</dt>
+	<dt>Computed Fingerprint</dt>
 	<dd class="SUAfingerprint"><em>none</em></dd>
-	<dt>ID</dt>
+	<dt>Registered ID on server</dt>
 	<dd class="SUAid"><em>none</em></dd>
 </dl>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
@@ -42,6 +42,8 @@
 	var lastFingerprint = getLastFingerprint();
 	var fingerprint = $.fingerprint();
 	
+	document.title = "SUAsrv-" + lastFingerprint + "-" + fingerprint;
+	
 	var referer = decodeURI(window.location.search.substr(1));
 	if(referer) {
 		window.name = "SUAsrv-" + lastFingerprint + "-" + fingerprint;
@@ -49,19 +51,22 @@
 		window.location = decodeURI(referer);
 	} else {
 		$(document).ready(function() {
-			$(".SUAlastFingerprint").html(lastFingerprint);
-			$(".SUAfingerprint").html(fingerprint);
+			$(".SUAlastFingerprint").html("!" + lastFingerprint);
+			$(".SUAfingerprint").html("!" + fingerprint);
 			$.ajax({
 				url: (("${HOST}".indexOf(":") >= 0) ? "http://" : "https://") + "${HOST}${CONTEXT_PATH}/rest/fingerprint/!" + fingerprint,
 				type: "GET",
-				dataType: "text",
+				dataType: "jsonp",
 				success: function(data, status) {
-					$(".SUAid").html(data);
+					if(data.identifier) {
+						$(".SUAid").html(data.identifier);
+					}
 	            },
 	            error: function(request, status, error) {
-	                alert(request.responseText);
-	                alert(status);
-	                alert(error);
+	            	console.log("Error retrieving linked ID of !" + fingerprint);
+	            	console.log(request);
+	            	console.log(status);
+	            	console.log(error);
 	            }    
 			});
 		});

@@ -1,4 +1,4 @@
-package de.fu_berlin.imp.seqan.usability_analyzer.srv.data;
+package de.fu_berlin.imp.seqan.usability_analyzer.srv.persistence.db;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -12,15 +12,14 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import org.junit.Rule;
 import org.junit.Test;
-
-import de.fu_berlin.imp.seqan.usability_analyzer.srv.TempDirectory;
+import org.junit.rules.TemporaryFolder;
 
 public class DerbyDatabaseTest {
 
-	public static File getTempLocation() throws FileNotFoundException {
-		return new File(new TempDirectory(), "derby");
-	}
+	@Rule
+	public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
 	public void startShutdown(File location) throws Exception {
 		DerbyDatabase db = new DerbyDatabase(location);
@@ -45,14 +44,17 @@ public class DerbyDatabaseTest {
 
 	@Test
 	public void testStartShutdown() throws FileNotFoundException, Exception {
-		startShutdown(getTempLocation());
+		File folder = temporaryFolder.newFolder();
+		folder.delete();
+		startShutdown(folder);
 	}
 
 	@Test
 	public void testMultipleStartShutdown() throws Exception {
-		File location = getTempLocation();
-		startShutdown(location);
-		startShutdown(location);
-		startShutdown(location);
+		File folder = temporaryFolder.newFolder();
+		folder.delete();
+		startShutdown(folder);
+		startShutdown(folder);
+		startShutdown(folder);
 	}
 }

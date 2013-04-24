@@ -1,4 +1,5 @@
 @XmlJavaTypeAdapters({
+		@XmlJavaTypeAdapter(type = IIdentifier.class, value = IdentifierAdapter.class),
 		@XmlJavaTypeAdapter(type = ID.class, value = IDAdapter.class),
 		@XmlJavaTypeAdapter(type = Fingerprint.class, value = FingerprintAdapter.class),
 		@XmlJavaTypeAdapter(type = Token.class, value = TokenAdapter.class),
@@ -13,5 +14,6 @@ import org.joda.time.DateTime;
 import de.fu_berlin.imp.seqan.usability_analyzer.srv.model.adapters.DateTimeAdapter;
 import de.fu_berlin.imp.seqan.usability_analyzer.srv.model.adapters.FingerprintAdapter;
 import de.fu_berlin.imp.seqan.usability_analyzer.srv.model.adapters.IDAdapter;
+import de.fu_berlin.imp.seqan.usability_analyzer.srv.model.adapters.IdentifierAdapter;
 import de.fu_berlin.imp.seqan.usability_analyzer.srv.model.adapters.TokenAdapter;
 

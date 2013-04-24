@@ -10,12 +10,15 @@ public class DateTimeAdapter extends XmlAdapter<String, DateTime> {
 	public String marshal(DateTime v) {
 		if (v == null)
 			return "";
-		return ISODateTimeFormat.dateTime().withOffsetParsed().print(v);
+		String line = ISODateTimeFormat.dateTime().withOffsetParsed().print(v);
+		line = line.replaceFirst("(\\d{2}:\\d{2}:\\d{2}.\\d+?)Z", "$1+00:00");
+		return line;
 	}
 
 	public DateTime unmarshal(String v) {
 		if (v == null || v.isEmpty())
 			return null;
+		v = v.replaceFirst("(\\d{2}:\\d{2}:\\d{2}.\\d+?)Z", "$1+00:00");
 		return ISODateTimeFormat.dateTime().withOffsetParsed().parseDateTime(v);
 	}
 

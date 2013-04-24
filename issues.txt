@@ -1,3 +1,4 @@
 # make path in doclog.js relative
 
 # DoclogManager: enable production of MediaType.APPLICATION_JSON
+# ResponseCorsFilter testen

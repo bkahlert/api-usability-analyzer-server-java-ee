@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-5p %d{HH:mm:ss,SSS} [%t] (%F:%L) %m%n"/>
+        </layout>
+    </appender>
+    <logger name="com.gargoylesoftware.htmlunit" additivity="false">
+        <level value="warn"/>
+    </logger>
+    <logger name="com.gargoylesoftware.htmlunit.DefaultCssErrorHandler" additivity="false">
+        <level value="error"/>
+    </logger>
+    <logger name="org.apache.commons.configuration" additivity="false">
+        <level value="warn"/>
+    </logger>
+    <logger name="org.apache.http" additivity="false">
+        <level value="warn"/>
+    </logger>
+    <root>
+        <level value="${log4j.level}"/>
+        <appender-ref ref="ConsoleAppender"/>
+    </root>
+</log4j:configuration>

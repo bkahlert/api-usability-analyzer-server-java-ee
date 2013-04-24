@@ -4,16 +4,6 @@
  *  
  * Copyright 1999-2010, Joseph Myers, Paul Johnston, Greg Holt, Will Bond <will@wbond.net>
  * http://www.myersdaily.org/joseph/javascript/md5-text.html
- * 
- * Released under the BSD license
- * http://www.opensource.org/licenses/bsd-license
- */
-/*!
- * Joseph Myer's md5() algorithm wrapped in a self-invoked function to prevent
- * global namespace polution, modified to hash unicode characters as UTF-8.
- *  
- * Copyright 1999-2010, Joseph Myers, Paul Johnston, Greg Holt, Will Bond <will@wbond.net>
- * http://www.myersdaily.org/joseph/javascript/md5-text.html
  * http://pajhome.org.uk/crypt/md5
  * 
  * Released under the BSD license

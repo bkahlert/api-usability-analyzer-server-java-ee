@@ -4,11 +4,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ StaticFilterTest.class,
-		de.fu_berlin.imp.seqan.usability_analyzer.srv.model.AllTests.class,
-		de.fu_berlin.imp.seqan.usability_analyzer.srv.clt.AllTests.class,
-		de.fu_berlin.imp.seqan.usability_analyzer.srv.data.AllTests.class,
-		de.fu_berlin.imp.seqan.usability_analyzer.srv.rest.AllTests.class })
+@Suite.SuiteClasses({ UnitTests.class, IntegrationTests.class })
 public class AllTests {
-
 }

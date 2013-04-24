@@ -1,0 +1,30 @@
+----------------------------------------------------------------
+Mon Apr 22 14:46:37 CEST 2013:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.9.1.0 - (1344872): instance a816c00e-013e-31c8-1b33-000003d37958 
+on database directory /private/var/folders/3m/4p47cq955p142xmsnh0c_9lm0000gn/T/junit2076795930616170437/junit7498561707433977453  with class loader sun.misc.Launcher$AppClassLoader@546b97fd 
+Loaded from file:/Users/bkahlert/.m2/repository/org/apache/derby/derby/10.9.1.0/derby-10.9.1.0.jar
+java.vendor=Apple Inc.
+java.runtime.version=1.6.0_45-b06-451-11M4406
+user.dir=/Users/bkahlert/Dropbox/Development/suasrv-workspace/usability_analyzer.srv
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Mon Apr 22 14:46:38 CEST 2013:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.9.1.0 - (1344872): instance 070a00b0-013e-31c8-1b33-000003d37958 
+on database directory /private/var/folders/3m/4p47cq955p142xmsnh0c_9lm0000gn/T/junit783120454391296424/junit8368158674173409541  with class loader sun.misc.Launcher$AppClassLoader@546b97fd 
+Loaded from file:/Users/bkahlert/.m2/repository/org/apache/derby/derby/10.9.1.0/derby-10.9.1.0.jar
+java.vendor=Apple Inc.
+java.runtime.version=1.6.0_45-b06-451-11M4406
+user.dir=/Users/bkahlert/Dropbox/Development/suasrv-workspace/usability_analyzer.srv
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Mon Apr 22 14:46:40 CEST 2013:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.9.1.0 - (1344872): instance 965681a5-013e-31c8-1b33-000003d37958 
+on database directory /private/var/folders/3m/4p47cq955p142xmsnh0c_9lm0000gn/T/junit8413905419736284680/junit4578281555633226234  with class loader sun.misc.Launcher$AppClassLoader@546b97fd 
+Loaded from file:/Users/bkahlert/.m2/repository/org/apache/derby/derby/10.9.1.0/derby-10.9.1.0.jar
+java.vendor=Apple Inc.
+java.runtime.version=1.6.0_45-b06-451-11M4406
+user.dir=/Users/bkahlert/Dropbox/Development/suasrv-workspace/usability_analyzer.srv
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

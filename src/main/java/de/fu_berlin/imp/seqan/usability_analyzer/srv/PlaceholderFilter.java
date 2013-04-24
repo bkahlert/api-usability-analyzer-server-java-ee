@@ -26,7 +26,7 @@ import de.fu_berlin.imp.seqan.usability_analyzer.srv.servlets.BufferedServletRes
  * @author bkahlert
  * 
  */
-public class SRVcltFilter implements Filter {
+public class PlaceholderFilter implements Filter {
 
 	private ServletContext context;
 
@@ -38,9 +38,11 @@ public class SRVcltFilter implements Filter {
 			FilterChain filterChain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) resp;
+
 		String uri = request.getRequestURI();
-		if (uri.contains("register.html") || uri.contains("SUAclt")
-				|| uri.contains("SUAsrv")) {
+		if ((uri.contains("register.html") || uri.contains("SUAclt") || uri
+				.contains("SUAsrv"))
+				&& !(uri.endsWith("png") || uri.endsWith("css"))) {
 			// process request as usual but buffer the output
 			OutputStream out = response.getOutputStream();
 			BufferedServletResponse wrapper = new BufferedServletResponse(
@@ -49,6 +51,9 @@ public class SRVcltFilter implements Filter {
 
 			response.setContentType(response.getContentType()
 					+ "; charset=UTF-8");
+			response.setHeader("Cache-Control",
+					"no-cache, no-store, must-revalidate");
+			response.setDateHeader("Expires", 0L);
 
 			// the wrapper now contains the normally shipped data
 			// let's modify it

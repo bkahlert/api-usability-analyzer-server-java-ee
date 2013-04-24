@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%-5p %d{HH:mm:ss,SSS} [%t] %m%n" />
+		</layout>
+	</appender>
+	<appender name="AsyncConsoleAppender" class="org.apache.log4j.AsyncAppender">
+		<appender-ref ref="ConsoleAppender"/>
+	</appender>
+	<appender name="FileAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="datePattern" value="'.'yyyy-MM-dd'.log'" />
+		<param name="file" value="${SUAsrv.log.file}" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%-5p %d{yyyy-MM-dd HH:mm:ss,SSS} %m%n" />
+		</layout>
+	</appender>
+	<appender name="AsyncFileAppender" class="org.apache.log4j.AsyncAppender">
+		<appender-ref ref="FileAppender"/>
+	</appender>
+	<appender name="SMTP"
+		class="de.fu_berlin.imp.seqan.usability_analyzer.srv.logging.TLSSMTPAppender">
+		<param name="BufferSize" value="32" />
+		<param name="From" value="${SUAsrv.mail.from}" />
+		<param name="SMTPHost" value="${SUAsrv.mail.host}" />
+		<param name="SMTPPassword" value="${SUAsrv.mail.password}" />
+		<param name="SMTPUsername" value="${SUAsrv.mail.username}" />
+		<param name="Subject" value="Error on SUAsrv" />
+		<param name="Threshold" value="ERROR" />
+		<param name="TLS" value="${SUAsrv.mail.TLS}" />
+		<param name="To" value="${SUAsrv.mail.to}" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{ISO8601}]%n%n%-5p%n%n%c%n%n%m%n%n" />
+		</layout>
+	</appender>
+	<appender name="AsyncSMTP" class="org.apache.log4j.AsyncAppender">
+		<appender-ref ref="SMTP"/>
+	</appender>
+	<root>
+		<level value="${log4j.level}" />
+		<appender-ref ref="AsyncConsoleAppender" />
+		<appender-ref ref="AsyncFileAppender" />
+		<appender-ref ref="AsyncSMTP" />
+	</root>
+</log4j:configuration>

@@ -1,4 +1,4 @@
-package de.fu_berlin.imp.seqan.usability_analyzer.srv.data;
+package de.fu_berlin.imp.seqan.usability_analyzer.srv.persistence.db;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +13,7 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
+// TODO currently not used
 public class DerbyDatabase {
 	private static Logger LOGGER = Logger.getLogger(DerbyDatabase.class);
 

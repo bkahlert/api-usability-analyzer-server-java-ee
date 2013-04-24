@@ -7,12 +7,12 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-import de.fu_berlin.imp.seqan.usability_analyzer.srv.data.DoclogRecordContainer;
+import de.fu_berlin.imp.seqan.usability_analyzer.srv.persistence.db.DoclogRecordContainer;
 import de.fu_berlin.imp.seqan.usability_analyzer.srv.ui.DoclogRecordViewer;
+import de.fu_berlin.imp.seqan.usability_analyzer.srv.ui.EntityViewer;
 
 @SuppressWarnings("serial")
 public class SUAsrvApplication extends Application implements
@@ -32,8 +32,10 @@ public class SUAsrvApplication extends Application implements
 		panel.setSizeFull();
 
 		VerticalLayout left = new VerticalLayout();
-		Label label = new Label("Hello Vaadin user");
-		left.addComponent(label);
+		EntityViewer entityViewer = new EntityViewer();
+		entityViewer.setCaption("kkjljklk");
+		entityViewer.setHeight("300px");
+		left.addComponent(entityViewer);
 
 		Button button = new Button("Hello");
 		left.addComponent(button);
@@ -41,6 +43,7 @@ public class SUAsrvApplication extends Application implements
 
 		VerticalLayout right = new VerticalLayout();
 		doclogViewer = new DoclogRecordViewer(this);
+		doclogViewer.setContainerDataSource(getDoclogRecordContainer());
 		right.addComponent(doclogViewer);
 		panel.addComponent(right);
 

@@ -5,40 +5,40 @@ import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
-
-import de.fu_berlin.imp.seqan.usability_analyzer.srv.utils.JAXBUtils;
 
 public class DoclogTest {
 
 	public static final DoclogRecord doclogRecord1 = new DoclogRecord(
 			"http://www.seqan.de/dddoc/html_devel/INDEX_Shortcut_Iterators.html#PeptideIterator",
 			"141.14.249.178", null, DoclogAction.READY, null,
-			DoclogRecord.ISO8601_simple.parseDateTime("2011-09-13T12-07-53"),
-			new Rectangle(0, 0, 179, 477));
+			DoclogRecord.ISO8601_simple
+					.parseDateTime("2011-09-13T12-07-53+02:00"), new Rectangle(
+					0, 0, 179, 477));
 	public static final DoclogRecord doclogRecord2 = new DoclogRecord(
 			"http://www.seqan.de/dddoc/html_devel/INDEX_Shortcut_Iterators.html#PeptideIterator",
-			"141.14.249.178", null, DoclogAction.SCROLL, null,
-			DoclogRecord.ISO8601_simple.parseDateTime("2011-09-13T12-07-55"),
-			new Rectangle(0, 132, 179, 477));
+			"141.14.249.178", "-", DoclogAction.SCROLL, null,
+			DoclogRecord.ISO8601_simple
+					.parseDateTime("2011-09-13T12-07-55+03:00"), new Rectangle(
+					0, 132, 179, 477));
 	public static final DoclogRecord doclogRecord3 = new DoclogRecord(
 			"http://www.seqan.de/dddoc/html_devel/INDEX_Shortcut_Iterators.html#PeptideIterator",
 			"141.14.249.178", "192.168.0.1", DoclogAction.LINK,
 			"http://www.bkahlert.com", DoclogRecord.ISO8601_simple
-					.parseDateTime("2011-09-13T12-09-04"), new Rectangle(0,
-					132, 179, 477));
+					.parseDateTime("2011-09-13T12-09-04-08:00"), new Rectangle(
+					0, 132, 179, 477));
 	public static final DoclogRecord doclogRecord4 = new DoclogRecord(
 			"http://www.seqan.de/dddoc/html_devel/INDEX_Shortcut_Iterators.html#PeptideIterator",
 			"141.14.249.178", null, DoclogAction.UNLOAD, null,
-			DoclogRecord.ISO8601_simple.parseDateTime("2011-09-13T12-09-04"),
-			new Rectangle(0, 132, 179, 477));
+			DoclogRecord.ISO8601_simple
+					.parseDateTime("2011-09-13T12-09-04-08:30"), new Rectangle(
+					0, 132, 179, 477));
 
 	public static Doclog DOCLOG;
 
 	public DoclogTest() {
-		DOCLOG = new Doclog();
+		DOCLOG = new Doclog(new ID("test"));
 		DOCLOG.add(doclogRecord1);
 		DOCLOG.add(doclogRecord2);
 		DOCLOG.add(doclogRecord3);
@@ -50,9 +50,20 @@ public class DoclogTest {
 		File xml = File.createTempFile("doclog", ".xml");
 		xml.deleteOnExit();
 
-		JAXBUtils.marshall(DOCLOG, xml);
-		Doclog doclog = JAXBUtils.unmarshall(Doclog.class, xml);
+		StringBuffer marshalled = new StringBuffer();
+		for (DoclogRecord doclogRecord : DOCLOG) {
+			marshalled.append(doclogRecord.toString());
+			marshalled.append("\n");
+		}
 
-		Assert.assertEquals(DOCLOG.size(), doclog.size());
+		for (String line : marshalled.toString().split("\n")) {
+			if (line.isEmpty())
+				continue;
+			DoclogRecord expected = DOCLOG.remove(0);
+			DoclogRecord actual = new DoclogRecord(line);
+			Assert.assertEquals(expected, actual);
+		}
+
+		Assert.assertEquals(0, DOCLOG.size());
 	}
 }

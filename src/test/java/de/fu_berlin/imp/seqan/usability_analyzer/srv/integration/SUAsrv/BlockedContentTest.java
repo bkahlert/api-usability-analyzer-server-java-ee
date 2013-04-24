@@ -1,38 +1,50 @@
-package de.fu_berlin.imp.seqan.usability_analyzer.srv;
+package de.fu_berlin.imp.seqan.usability_analyzer.srv.integration.SUAsrv;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
-
-import junit.framework.Assert;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
-public class StaticFilterTest {
+import de.fu_berlin.imp.seqan.usability_analyzer.srv.utils.TestConfiguration;
 
-	private int getResponseCode(String path) throws IOException,
-			MalformedURLException, ProtocolException {
-		HttpURLConnection connection = (HttpURLConnection) new URL(
-				Utils.getBaseURI() + "/static/" + path).openConnection();
-		connection.setRequestMethod("GET");
-		return connection.getResponseCode();
+@RunWith(Parameterized.class)
+public class BlockedContentTest {
+
+	@Parameters(name = "{0}")
+	public static List<Object[]> getParameters() {
+		Object[][] data = new Object[][] { new Object[] { "WEB-INF" },
+				new Object[] { "WEB-INF/" },
+				new Object[] { "WEB-INF/web.xml" },
+				new Object[] { "META-INF" }, new Object[] { "META-INF/" },
+				new Object[] { "META-INF/context.xml" },
+				new Object[] { "META-INF/MANIFEST.MF" } };
+		return Arrays.asList(data);
+	}
+
+	private String blockedPath;
+
+	public BlockedContentTest(String blockedResource) {
+		this.blockedPath = blockedResource;
 	}
 
 	@Test
-	public void testFilterWEBINF() throws Exception {
-		Assert.assertEquals(404, getResponseCode("WEB-INF"));
-		Assert.assertEquals(404, getResponseCode("WEB-INF/"));
-		Assert.assertEquals(404, getResponseCode("WEB-INF/web.xml"));
-	}
+	public void testBlocked() throws Exception {
+		for (URL url : TestConfiguration
+				.getSUAsrvURLs("/static/" + blockedPath)) {
+			HttpURLConnection connection = (HttpURLConnection) url
+					.openConnection();
+			connection.setRequestMethod("GET");
+			int responseCode = connection.getResponseCode();
 
-	@Test
-	public void testFilterMETAINF() throws Exception {
-		Assert.assertEquals(404, getResponseCode("META-INF"));
-		Assert.assertEquals(404, getResponseCode("META-INF/"));
-		Assert.assertEquals(404, getResponseCode("META-INF/context.xml"));
-		Assert.assertEquals(404, getResponseCode("META-INF/MANIFEST.MF"));
+			assertEquals(404, responseCode);
+		}
 	}
 
 }

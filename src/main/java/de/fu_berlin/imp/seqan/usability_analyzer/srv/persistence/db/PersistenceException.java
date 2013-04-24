@@ -1,4 +1,4 @@
-package de.fu_berlin.imp.seqan.usability_analyzer.srv.data;
+package de.fu_berlin.imp.seqan.usability_analyzer.srv.persistence.db;
 
 public class PersistenceException extends Exception {
 

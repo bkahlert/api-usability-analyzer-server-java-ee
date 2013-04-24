@@ -33,6 +33,24 @@
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 
+	<filter>
+		<filter-name>Placeholder Filter</filter-name>
+		<filter-class>de.fu_berlin.imp.seqan.usability_analyzer.srv.PlaceholderFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>Placeholder Filter</filter-name>
+		<url-pattern>/static/*</url-pattern>
+	</filter-mapping>
+	
+	<filter>
+		<filter-name>CORSFilter</filter-name>
+		<filter-class>de.fu_berlin.imp.seqan.usability_analyzer.srv.filters.CORSFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CORSFilter</filter-name>
+		<url-pattern>*</url-pattern>
+	</filter-mapping>
+
 	<servlet>
 		<servlet-name>Static Servlet</servlet-name>
 		<servlet-class>de.fu_berlin.imp.seqan.usability_analyzer.srv.servlets.StaticServlet</servlet-class>
@@ -47,14 +65,6 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>Static Filter</filter-name>
-		<url-pattern>/static/*</url-pattern>
-	</filter-mapping>
-	<filter>
-		<filter-name>SRVclt Filter</filter-name>
-		<filter-class>de.fu_berlin.imp.seqan.usability_analyzer.srv.SRVcltFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>SRVclt Filter</filter-name>
 		<url-pattern>/static/*</url-pattern>
 	</filter-mapping>
 

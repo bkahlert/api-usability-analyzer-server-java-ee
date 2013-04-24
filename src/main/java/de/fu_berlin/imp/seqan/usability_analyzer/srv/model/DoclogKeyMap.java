@@ -76,9 +76,27 @@ public class DoclogKeyMap {
 	}
 
 	public static DoclogKeyMap load(File file) throws FileNotFoundException {
+		if (file == null)
+			throw new IllegalArgumentException("file must not be null");
+		if (!file.exists())
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				throw new IllegalArgumentException("Could not create " + file,
+						e);
+			}
+		if (!file.isFile())
+			throw new IllegalArgumentException("file must be a "
+					+ File.class.getSimpleName());
+		if (!file.canRead() || !file.canWrite())
+			throw new IllegalArgumentException(
+					"file must be readable and writable");
 		try {
 			getReadLock(file).lock();
-			return JAXBUtils.unmarshall(DoclogKeyMap.class, file);
+			DoclogKeyMap doclogKeyMap = file.length() != 0l ? JAXBUtils
+					.unmarshall(DoclogKeyMap.class, file) : new DoclogKeyMap();
+			doclogKeyMap.setFile(file);
+			return doclogKeyMap;
 		} catch (JAXBException e) {
 			LOGGER.error(e);
 			return null;
@@ -87,15 +105,24 @@ public class DoclogKeyMap {
 		}
 	}
 
-	public void save(File file) throws IOException {
+	private File file = null;
+
+	private void setFile(File file) {
+		this.file = file;
+	}
+
+	public void save(File file) throws IOException, JAXBException {
 		try {
 			getWriteLock(file).lock();
 			JAXBUtils.marshall(this, file);
-		} catch (JAXBException e) {
-			LOGGER.error(e);
 		} finally {
 			getWriteLock(file).unlock();
 		}
+	}
+
+	public void save() throws IOException, JAXBException {
+		if (this.file != null)
+			save(this.file);
 	}
 
 	private ConcurrentHashMap<Fingerprint, ID> map = new ConcurrentHashMap<Fingerprint, ID>();
@@ -118,6 +145,12 @@ public class DoclogKeyMap {
 				throw new FinterprintAlreadyMappedException(fingerprint,
 						linkedID, id);
 			}
+		}
+	}
+
+	synchronized public void deassociate(Fingerprint fingerprint) {
+		if (this.map.containsKey(fingerprint)) {
+			this.map.remove(fingerprint);
 		}
 	}
 

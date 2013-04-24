@@ -1,61 +1,87 @@
 package de.fu_berlin.imp.seqan.usability_analyzer.srv.model;
 
+import java.util.Comparator;
 import java.util.regex.Pattern;
 
-public class Fingerprint implements Comparable<Fingerprint> {
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.collections.comparators.NullComparator;
+import org.apache.commons.lang.ArrayUtils;
+
+@XmlRootElement(namespace = "de.fu_berlin.imp.seqan.usability_analyzer.srv")
+public class Fingerprint implements IIdentifier {
 	public static final Pattern PATTERN = Pattern.compile("^![A-Za-z\\d]+$");
 
-	public static final boolean isValid(String id) {
-		if (id == null)
+	public static final String[] invalidNames = new String[] { "!null",
+			"!undefined", "!error", "!exception", "!invalid", "!id",
+			"!fingerprint" };
+
+	public static final boolean isValid(String fingerprint) {
+		if (fingerprint == null
+				|| ArrayUtils.contains(invalidNames, fingerprint.toLowerCase())) {
 			return false;
-		return PATTERN.matcher(id).find();
+		}
+		return PATTERN.matcher(fingerprint).find();
 	}
+
+	private static final NullComparator COMPARATOR = new NullComparator(
+			new Comparator<Fingerprint>() {
+				@Override
+				public int compare(Fingerprint fingerprint1,
+						Fingerprint fingerprint2) {
+					return fingerprint1.getIdentifier().compareTo(
+							fingerprint2.getIdentifier());
+				}
+			});
 
 	private String fingerprint;
 
+	@SuppressWarnings("unused")
+	private Fingerprint() {
+		this.fingerprint = null;
+	}
+
 	public Fingerprint(String fingerprint) {
 		super();
-		if (!isValid(fingerprint))
-			throw new InvalidParameterException(
-					Fingerprint.class.getSimpleName()
+		if (!isValid(fingerprint)) {
+			throw new IllegalArgumentException(
+					Fingerprint.class.getSimpleName() + " " + fingerprint
 							+ " must only contain alphanumeric characters");
+		}
 		this.fingerprint = fingerprint;
 	}
 
 	@Override
-	public String toString() {
+	@XmlAttribute
+	public String getIdentifier() {
 		return this.fingerprint;
+	}
+
+	@Override
+	public int compareTo(Object obj) {
+		return COMPARATOR.compare(this,
+				obj instanceof Fingerprint ? (Fingerprint) obj : null);
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((fingerprint == null) ? 0 : fingerprint.hashCode());
+		result = prime
+				* result
+				+ ((this.fingerprint == null) ? 0 : this.fingerprint.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Fingerprint other = (Fingerprint) obj;
-		if (fingerprint == null) {
-			if (other.fingerprint != null)
-				return false;
-		} else if (!fingerprint.equals(other.fingerprint))
-			return false;
-		return true;
+		return this.compareTo(obj) == 0;
 	}
 
-	public int compareTo(Fingerprint fingerprint) {
-		return this.toString().compareTo(fingerprint.toString());
+	@Override
+	public String toString() {
+		return this.getIdentifier();
 	}
 
 }
