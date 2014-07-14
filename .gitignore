@@ -1,4 +1,4 @@
-/usability_analyzer.srv.launch
+/de.fu_berlin.imp.apiua.server.java_ee.launch
 target
 chromedriver.log
 derby.log

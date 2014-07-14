@@ -12,12 +12,12 @@
 	<context-param>
 		<description>Location to where to save doclog files</description>
 		<param-name>doclogLocation</param-name>
-		<param-value>${SUAsrv.doclog.dir}</param-value>
+		<param-value>${APIUAsrv.doclog.dir}</param-value>
 	</context-param>
 	<context-param>
 		<description>Location to where to save diff files</description>
 		<param-name>diffLocation</param-name>
-		<param-value>${SUAsrv.diff.dir}</param-value>
+		<param-value>${APIUAsrv.diff.dir}</param-value>
 	</context-param>
 	<servlet>
 		<servlet-name>Vaadin Application Servlet</servlet-name>
@@ -25,7 +25,7 @@
 		<init-param>
 			<description>Vaadin application class to start</description>
 			<param-name>application</param-name>
-			<param-value>de.fu_berlin.imp.seqan.usability_analyzer.srv.SUAsrvApplication</param-value>
+			<param-value>de.fu_berlin.imp.apiua.server.java_ee.APIUAsrvApplication</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -35,7 +35,7 @@
 
 	<filter>
 		<filter-name>Placeholder Filter</filter-name>
-		<filter-class>de.fu_berlin.imp.seqan.usability_analyzer.srv.PlaceholderFilter</filter-class>
+		<filter-class>de.fu_berlin.imp.apiua.server.java_ee.PlaceholderFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>Placeholder Filter</filter-name>
@@ -44,7 +44,7 @@
 	
 	<filter>
 		<filter-name>CORSFilter</filter-name>
-		<filter-class>de.fu_berlin.imp.seqan.usability_analyzer.srv.filters.CORSFilter</filter-class>
+		<filter-class>de.fu_berlin.imp.apiua.server.java_ee.filters.CORSFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>CORSFilter</filter-name>
@@ -53,7 +53,7 @@
 
 	<servlet>
 		<servlet-name>Static Servlet</servlet-name>
-		<servlet-class>de.fu_berlin.imp.seqan.usability_analyzer.srv.servlets.StaticServlet</servlet-class>
+		<servlet-class>de.fu_berlin.imp.apiua.server.java_ee.servlets.StaticServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Static Servlet</servlet-name>
@@ -61,7 +61,7 @@
 	</servlet-mapping>
 	<filter>
 		<filter-name>Static Filter</filter-name>
-		<filter-class>de.fu_berlin.imp.seqan.usability_analyzer.srv.StaticFilter</filter-class>
+		<filter-class>de.fu_berlin.imp.apiua.server.java_ee.StaticFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>Static Filter</filter-name>
@@ -73,7 +73,7 @@
 		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.packages</param-name>
-			<param-value>de.fu_berlin.imp.seqan.usability_analyzer.srv.rest</param-value>
+			<param-value>de.fu_berlin.imp.apiua.server.java_ee.rest</param-value>
 		</init-param>
 		<init-param>
 			<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
@@ -81,7 +81,7 @@
 		</init-param>
 		<init-param>
 			<param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
-			<param-value>de.fu_berlin.imp.seqan.usability_analyzer.srv.rest.QueryFormMerger</param-value>
+			<param-value>de.fu_berlin.imp.apiua.server.java_ee.rest.QueryFormMerger</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
@@ -92,7 +92,7 @@
 
 	<servlet>
 		<servlet-name>DiffServlet</servlet-name>
-		<servlet-class>de.fu_berlin.imp.seqan.usability_analyzer.srv.servlets.DiffServlet</servlet-class>
+		<servlet-class>de.fu_berlin.imp.apiua.server.java_ee.servlets.DiffServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>

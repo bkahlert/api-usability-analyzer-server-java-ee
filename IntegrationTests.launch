@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.junit.launchconfig">
 <listAttribute key="com.mountainminds.eclemma.core.SCOPE_IDS">
-<listEntry value="=usability_analyzer.srv/src\/main\/java"/>
+<listEntry value="=de.fu_berlin.imp.apiua.server.java_ee/src\/main\/java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/usability_analyzer.srv/src/test/java/de/fu_berlin/imp/seqan/usability_analyzer/srv/IntegrationTests.java"/>
+<listEntry value="/de.fu_berlin.imp.apiua.server.java_ee/src/test/java/de/fu_berlin/imp/apiua/server/java_ee/IntegrationTests.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
@@ -14,8 +14,8 @@
 <stringAttribute key="org.eclipse.jdt.junit.TESTNAME" value=""/>
 <stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit4"/>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="de.fu_berlin.imp.seqan.usability_analyzer.srv.IntegrationTests"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="usability_analyzer.srv"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="de.fu_berlin.imp.apiua.server.java_ee.IntegrationTests"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="de.fu_berlin.imp.apiua.server.java_ee"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dconfig=integration_test"/>
 </launchConfiguration>

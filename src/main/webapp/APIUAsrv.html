@@ -1,0 +1,77 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="expires" content="Sat, 01 Dec 2001 00:00:00 GMT">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<style>
+	body {
+	  margin: 0;
+	  padding: 0;
+	  background-color: #fff;
+	}
+	dl {
+	  margin: 0;
+	}
+	</style>
+	<script src="js/libs/modernizr-2.5.3-respond-1.1.0.min.js"></script>
+</head>
+<body>
+<dl>
+	<dt>Last Known Fingerprint</dt>
+	<dd class="SUAlastFingerprint"><em>none</em></dd>
+	<dt>Computed Fingerprint</dt>
+	<dd class="SUAfingerprint"><em>none</em></dd>
+	<dt>Registered ID on server</dt>
+	<dd class="SUAid"><em>none</em></dd>
+</dl>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
+<script src="js/APIUAsrv.js"></script>
+<script type="text/javascript">
+(function() {
+	function setLastFingerprint(fingerprint) {
+		localStorage.setItem("lastFingerprint", fingerprint);
+	}
+	
+	function getLastFingerprint() {
+		var lastFingerprint = localStorage.getItem("lastFingerprint");
+		return (lastFingerprint) ? lastFingerprint : $.fingerprint();
+	}
+	
+	var lastFingerprint = getLastFingerprint();
+	var fingerprint = $.fingerprint();
+	
+	document.title = "APIUAsrv-" + lastFingerprint + "-" + fingerprint;
+	
+	var referer = decodeURI(window.location.search.substr(1));
+	if(referer) {
+		window.name = "APIUAsrv-" + lastFingerprint + "-" + fingerprint;
+		setLastFingerprint(fingerprint);
+		window.location = decodeURI(referer);
+	} else {
+		$(document).ready(function() {
+			$(".SUAlastFingerprint").html("!" + lastFingerprint);
+			$(".SUAfingerprint").html("!" + fingerprint);
+			$.ajax({
+				url: (("${HOST}".indexOf(":") >= 0) ? "http://" : "https://") + "${HOST}${CONTEXT_PATH}/rest/fingerprint/!" + fingerprint,
+				type: "GET",
+				dataType: "jsonp",
+				success: function(data, status) {
+					if(data.identifier) {
+						$(".SUAid").html(data.identifier);
+					}
+	            },
+	            error: function(request, status, error) {
+	            	console.log("Error retrieving linked ID of !" + fingerprint);
+	            	console.log(request);
+	            	console.log(status);
+	            	console.log(error);
+	            }    
+			});
+		});
+	}
+})();
+</script>
+</body>
+</html>

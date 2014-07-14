@@ -2,11 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.fu_berlin.imp.seqan</groupId>
-	<artifactId>usability_analyzer.srv</artifactId>
+	<groupId>de.fu_berlin.imp.apiua</groupId>
+	<artifactId>server-java-ee</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Vaadin Web Application</name>
+	<name>API Usability Analyzer Server - Java EE</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,7 +21,7 @@
 			<filter>${basedir}/${config.name}.config</filter>
 		</filters>
 
-		<finalName>SUAsrv</finalName>
+		<finalName>APIUAsrv</finalName>
 
 		<plugins>
 			<plugin>
@@ -82,7 +82,7 @@
 				compiler -->
 			<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>gwt-maven-plugin</artifactId> 
 				<version>${gwt.plugin.version}</version> <configuration> <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets</webappDirectory> 
-				<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs> <runTarget>usability_analyzer.srv</runTarget> 
+				<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs> <runTarget>de.fu_berlin.imp.apiua.server.java_ee</runTarget> 
 				<hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp> 
 				<noServer>true</noServer> <port>8080</port> <compileReport>false</compileReport> 
 				</configuration> <executions> <execution> <goals> <goal>resources</goal> 
@@ -95,7 +95,7 @@
 				<goals> <goal>update-widgetset</goal> </goals> </execution> </executions> 
 				</plugin> -->
 
-			<!-- A simple Jetty test server at http://localhost:8080/usability_analyzer.srv 
+			<!-- A simple Jetty test server at http://localhost:8080/de.fu_berlin.imp.apiua.server.java_ee 
 				can be launched with the Maven goal jetty:run and stopped with jetty:stop -->
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
@@ -103,13 +103,13 @@
 				<version>6.1.24</version>
 				<configuration>
 					<stopPort>9966</stopPort>
-					<stopKey>usability_analyzer.srv</stopKey>
+					<stopKey>de.fu_berlin.imp.apiua.server.java_ee</stopKey>
 					<!-- Redeploy every x seconds if changes are detected, 0 for no automatic 
 						redeployment -->
 					<scanIntervalSeconds>1</scanIntervalSeconds>
 					<!-- make sure Jetty also finds the widgetset -->
 					<webAppConfig>
-						<contextPath>/SUAsrv</contextPath>
+						<contextPath>/APIUAsrv</contextPath>
 						<baseResource implementation="org.mortbay.resource.ResourceCollection">
 							<!-- Workaround for Maven/Jetty issue http://jira.codehaus.org/browse/JETTY-680 -->
 							<!-- <resources>src/main/webapp,${project.build.directory}/${project.build.finalName}</resources> -->
@@ -293,7 +293,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- used to check for the SUAclt.js includes on observed sites -->
+		<!-- used to check for the APIUAclt.js includes on observed sites -->
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
@@ -309,7 +309,7 @@
 			<classifier>sources</classifier>
 		</dependency>
 
-		<!-- serves the test client page that contains the SUAclt.js code -->
+		<!-- serves the test client page that contains the APIUAclt.js code -->
 		<dependency>
 			<groupId>org.simpleframework</groupId>
 			<artifactId>simple</artifactId>
@@ -410,4 +410,8 @@
 
 	</dependencies>
 
+	<organization>
+		<name>Björn Kahlert, Freie Universität Berlin</name>
+		<url>http://www.mi.fu-berlin.de/w/Main/BjoernKahlert</url>
+	</organization>
 </project>

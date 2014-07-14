@@ -11,7 +11,7 @@
 	</appender>
 	<appender name="FileAppender" class="org.apache.log4j.DailyRollingFileAppender">
 		<param name="datePattern" value="'.'yyyy-MM-dd'.log'" />
-		<param name="file" value="${SUAsrv.log.file}" />
+		<param name="file" value="${APIUAsrv.log.file}" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%-5p %d{yyyy-MM-dd HH:mm:ss,SSS} %m%n" />
 		</layout>
@@ -20,16 +20,16 @@
 		<appender-ref ref="FileAppender"/>
 	</appender>
 	<appender name="SMTP"
-		class="de.fu_berlin.imp.seqan.usability_analyzer.srv.logging.TLSSMTPAppender">
+		class="de.fu_berlin.imp.apiua.server.java_ee.logging.TLSSMTPAppender">
 		<param name="BufferSize" value="32" />
-		<param name="From" value="${SUAsrv.mail.from}" />
-		<param name="SMTPHost" value="${SUAsrv.mail.host}" />
-		<param name="SMTPPassword" value="${SUAsrv.mail.password}" />
-		<param name="SMTPUsername" value="${SUAsrv.mail.username}" />
-		<param name="Subject" value="Error on SUAsrv" />
+		<param name="From" value="${APIUAsrv.mail.from}" />
+		<param name="SMTPHost" value="${APIUAsrv.mail.host}" />
+		<param name="SMTPPassword" value="${APIUAsrv.mail.password}" />
+		<param name="SMTPUsername" value="${APIUAsrv.mail.username}" />
+		<param name="Subject" value="Error on APIUAsrv" />
 		<param name="Threshold" value="ERROR" />
-		<param name="TLS" value="${SUAsrv.mail.TLS}" />
-		<param name="To" value="${SUAsrv.mail.to}" />
+		<param name="TLS" value="${APIUAsrv.mail.TLS}" />
+		<param name="To" value="${APIUAsrv.mail.to}" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="[%d{ISO8601}]%n%n%-5p%n%n%c%n%n%m%n%n" />
 		</layout>
