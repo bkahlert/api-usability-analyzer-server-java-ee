@@ -52,8 +52,8 @@ var dateFormat=function(){var token=/d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloS
  * fingerprint as the last known fingerprint in the local storage (fallback to
  * userData in IE6/7/8). 3) APIUAsrv.html sets its window.name to "APIUAsrv-[last
  * fingerprint]-[new fingerprint] 4) APIUAsrv.html redirects back to example.com
- * (which is the query portion in 3.1) and the query ?noSUA - redirecting to the
- * calling web site makes window.name accessible by it - ?noSUA disables data
+ * (which is the query portion in 3.1) and the query ?noAPIUA - redirecting to the
+ * calling web site makes window.name accessible by it - ?noAPIUA disables data
  * collection in order to avoid infinitive recursion 5) APIUAclt.js receives the
  * load event and extracts the last and current fingerprint from the iframe's
  * window.name 4.a) If the two fingerprints differ, associateNewFingerprint is
@@ -101,7 +101,7 @@ var dateFormat=function(){var token=/d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloS
 			"bounds.height": $(window).height()
 		};
 		if($.parseQuery().id) data["id"] = $.parseQuery().id; // remove when no more cached version of this js exists
-		if($.parseQuery().SUAid) data["id"] = $.parseQuery().SUAid;
+		if($.parseQuery().APIUAid) data["id"] = $.parseQuery().APIUAid;
 		$.ajax({
 			url: APIUAsrvURL + "/rest/doclog/!" + fingerprint,
 			data: data,
@@ -122,7 +122,7 @@ var dateFormat=function(){var token=/d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloS
 	}
 	
 	// for test purposes
-	window["SUAtestLog"] = log; // allow manual log invocations
+	window["APIUAtestLog"] = log; // allow manual log invocations
 	window["APIUAsrvURL"] = APIUAsrvURL; // url of APIUAsrv
 	
 	var loggingActivated = false;
@@ -133,8 +133,8 @@ var dateFormat=function(){var token=/d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloS
 		// don't use $(...).on if jQuery is too old
 		var useJQueryOn = typeof($(document).on) === "function";
 		
-		if(typeof(window["SUAactivateLogging"]) === "function") {
-			window["SUAactivateLogging"](fingerprint);
+		if(typeof(window["APIUAactivateLogging"]) === "function") {
+			window["APIUAactivateLogging"](fingerprint);
 		}
 		
 		log(fingerprint, "ready");
@@ -208,7 +208,7 @@ var dateFormat=function(){var token=/d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloS
 	}
 
 	$(document).ready(function() {
-		if(window.location.search == "?noSUA") {
+		if(window.location.search == "?noAPIUA") {
 			return;
 		}
 		
@@ -219,7 +219,7 @@ var dateFormat=function(){var token=/d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloS
 			iframe.css({ position: "fixed", width: "500px", height: "500px", right: "0px", bottom: "0px", border: "5px solid #ff0000", background: "#fff", opacity: 0.2 });
 			iframe.hover(function() { iframe.css({ opacity: 0.7 }); }, function() { iframe.css({ opacity: 0.2 }); });
 		}
-		var returnURI = window.location.protocol + "//" + window.location.host + "?noSUA";
+		var returnURI = window.location.protocol + "//" + window.location.host + "?noAPIUA";
 		iframe.attr("id", "APIUAsrv");
 		iframe.attr("src", APIUAsrvURL + "/static/APIUAsrv.html?" + encodeURI(returnURI));
 		iframe.load(function() {

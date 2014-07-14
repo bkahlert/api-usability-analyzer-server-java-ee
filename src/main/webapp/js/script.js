@@ -23,15 +23,15 @@
 /*
  * Author: Björn Kahlert
  */
-window["SUAactivateLogging"] = function(fingerprint) {
+window["APIUAactivateLogging"] = function(fingerprint) {
 	$.ajax({
 		url: (("${HOST}".indexOf(":") >= 0) ? "http://" : "https://") + "${HOST}${CONTEXT_PATH}/rest/fingerprint/!" + fingerprint,
 		type: "GET",
 		dataType: "jsonp",
 		success: function(data, status) {
 			if(data.identifier) {
-				$(".SUAid").html(data.identifier);
-				document.title = "SeqAn ID: " + data.identifier;
+				$(".APIUAid").html(data.identifier);
+				document.title = "ID: " + data.identifier;
 			}
         },
         error: function(request, status, error) {
@@ -43,8 +43,8 @@ window["SUAactivateLogging"] = function(fingerprint) {
 }
 $(document).ready(function() {
 	var id = $.parseQuery().id;
-	if($.parseQuery().SUAid) id = $.parseQuery().SUAid;
+	if($.parseQuery().APIUAid) id = $.parseQuery().APIUAid;
 	if(id) {
-		$(".SUAid").html(id);
+		$(".APIUAid").html(id);
 	}
 });

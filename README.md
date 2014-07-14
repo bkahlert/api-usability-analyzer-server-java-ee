@@ -49,7 +49,9 @@ The API Usability Analyzer can generate screenshots out of the collected data. T
 
 ### Linking the data
 Now that you know what people programmed and what they did on your webpages the question is how to detect which programming history belongs to which browsing history. The web tracking code uses browser fingerprinting and cookies to keep track of the same subject.
-To let the server know who is who you need to make a call to https://localhost:8080/APIUAsrv/static/register.html?id0a3efda3 (whereas 0a3efda3 is the user's ID you define).
+To let the server know who is who you need to make a call to https://localhost:8080/APIUAsrv/static/register.html?id0a3efda3 (whereas 0a3efda3 is the user's ID you define).  
+You can always open [http://localhost:8080/APIUAsrv/](http://localhost:8080/APIUAsrv/) to check the link state of the used browser/subject.
+![Link State](images/register.png)
 
 The above mentioned python implementation does so on the subject's first compilation attempt. It checks if hidden file containing the user's id exists. If not it creates one, writes it to the file and opens the web page in the default browser.
 

@@ -22,7 +22,8 @@ public class APIUAsrvApplication extends Application implements
 
 	@Override
 	public void init() {
-		Window mainWindow = new Window("SeqAn Usability Analyzer Server");
+		Window mainWindow = new Window(
+				"API Usability Analyzer Server - Java EE");
 		setMainWindow(mainWindow);
 		getContext().addTransactionListener(new AppData(this));
 		// AppData.initLocale(getLocale(), APIUAsrvApplication.class.getName());
@@ -33,7 +34,6 @@ public class APIUAsrvApplication extends Application implements
 
 		VerticalLayout left = new VerticalLayout();
 		EntityViewer entityViewer = new EntityViewer();
-		entityViewer.setCaption("kkjljklk");
 		entityViewer.setHeight("300px");
 		left.addComponent(entityViewer);
 
