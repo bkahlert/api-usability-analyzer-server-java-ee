@@ -1,4 +1,12 @@
-/de.fu_berlin.imp.apiua.server.java_ee.launch
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
 target
 chromedriver.log
 derby.log
