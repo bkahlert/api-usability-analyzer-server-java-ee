@@ -1,10 +1,14 @@
 package de.fu_berlin.imp.seqan.usability_analyzer.srv.utils;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.NetworkInterface;
@@ -26,7 +30,6 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.DurationFieldType;
-import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -139,20 +142,18 @@ public class Utils {
 	 * @throws IOException
 	 */
 	public static Document loadDocument(URL url) throws IOException {
-		Document doc = null;
-		try {
+		Document doc;
+		if (UrlUtils.needsAuthentication(url, "GET")) {
+			// could fail because of requested authentication
+			String username = TestConfiguration.getUsername(url.getHost());
+			String password = TestConfiguration.getPassword(url.getHost());
+			String login = username + ":" + password;
+			String base64login = new String(Base64.encodeBase64(login
+					.getBytes()));
+			doc = Jsoup.connect(url.toString())
+					.header("Authorization", "Basic " + base64login).get();
+		} else {
 			doc = Jsoup.connect(url.toString()).get();
-		} catch (HttpStatusException e) {
-			if (e.getStatusCode() == 401) {
-				// could fail because of requested authentication
-				String username = TestConfiguration.getUsername(url.getHost());
-				String password = TestConfiguration.getPassword(url.getHost());
-				String login = username + ":" + password;
-				String base64login = new String(Base64.encodeBase64(login
-						.getBytes()));
-				doc = Jsoup.connect(url.toString())
-						.header("Authorization", "Basic " + base64login).get();
-			}
 		}
 		return doc;
 	}
@@ -246,5 +247,41 @@ public class Utils {
 		assertFalse(pageContainsFrames("http://trac.seqan.de"));
 		assertFalse(pageContainsFrames("http://google.de"));
 		assertFalse(pageContainsFrames("http://bkahlert.com"));
+	}
+
+	public File createBigFile(long size) throws IOException {
+		File bigFile = File.createTempFile("sua", "big");
+		RandomAccessFile f = new RandomAccessFile(bigFile, "rw");
+		f.setLength(size);
+		f.close();
+		return bigFile;
+	}
+
+	@Test
+	public void testCreateBigFile() {
+		long small = 512 * 1024;
+		long big = 5l * 1024l * 1024l * 1024l;
+
+		File smallFile = null, bigFile = null;
+		try {
+			smallFile = createBigFile(small); // 512KB
+			assertNotNull(smallFile);
+			assertEquals(small, smallFile.length());
+
+			System.err.println(big);
+			bigFile = createBigFile(big); // 5GB
+			System.err.println(bigFile);
+			assertNotNull(bigFile);
+			assertEquals(big, bigFile.length());
+		} catch (Exception e) {
+
+		} finally {
+			if (smallFile != null) {
+				smallFile.delete();
+			}
+			if (bigFile != null) {
+				bigFile.delete();
+			}
+		}
 	}
 }

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +15,10 @@ import java.util.List;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
@@ -24,6 +28,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -75,8 +80,12 @@ public class WebDataCollectionTest {
 	 * @return
 	 * @throws Exception
 	 */
-	@Parameters(name = "{0} using {1}")
+	@Parameters(name = "{1} -> {0}")
 	public static Collection<Object[]> data() throws Exception {
+
+		StartTestSiteIfNeededRule localServer = new StartTestSiteIfNeededRule();
+		localServer.start();
+
 		List<Object[]> parameters = new ArrayList<Object[]>();
 
 		IWebDriverFactory[] webDrivers = new IWebDriverFactory[] {
@@ -84,42 +93,109 @@ public class WebDataCollectionTest {
 				SeleniumUtils.getDefaultFirefoxDriverFactory(),
 				SeleniumUtils.getDefaultChromeDriverFactory() };
 
-		// TODO remove
-		System.setProperty("config", "system_test");
-
 		URL[] urls = TestConfiguration.getSUAcltWebHostURLs();
 
-		// urls = new URL[] { new URL("https://trac.seqan.de/") };
-
+		List<URL> urlsToBeTested = new ArrayList<URL>();
 		for (URL url : urls) {
-			for (IWebDriverFactory webDriverFactory : webDrivers) {
-				// TODO fixme: currently SSL sites are consideres needing an
-				// authentication
-				// this information should be defined explicitly in a properties
-				// file
-				if (url.getProtocol().equals("https")
-						&& !webDriverFactory.supportsAuthentication()) {
-					LOGGER.info("The page "
-							+ url
-							+ " propably needs an authentication. Since "
-							+ driver
-							+ " does not support authentication is test case is skipped.");
-					continue;
+			if (urlsToBeTested.contains(url))
+				continue;
+
+			LOGGER.info("Checking how to test " + url);
+			boolean containsFrames = false;
+			boolean framesHaveNoSUA = true;
+
+			Document doc;
+			try {
+				doc = Utils.loadDocument(url);
+			} catch (SocketTimeoutException e) {
+				LOGGER.warn(url
+						+ " can't be checked it connecting to it timed out");
+				continue;
+			}
+
+			if (doc.select("frameset").size() > 0) {
+				containsFrames = true;
+				LOGGER.info("... contains frames thus testing the following pages instead");
+				for (Element frame : doc.select("frame")) {
+					String baseUri = frame.baseUri();
+					baseUri = baseUri
+							.substring(0, baseUri.lastIndexOf("/") + 1);
+					URL frameUrl = new URL(baseUri + frame.attr("src"));
+					if (Utils.looksLikeSuaCltIsIncluded(frameUrl
+							.toExternalForm())) {
+						if (!urlsToBeTested.contains(frameUrl)) {
+							LOGGER.info("... " + frameUrl);
+							urlsToBeTested.add(frameUrl);
+						}
+						framesHaveNoSUA = false;
+					} else {
+						LOGGER.info("... ignore because of no SUA code: "
+								+ frameUrl);
+					}
 				}
-				parameters.add(new Object[] { url, webDriverFactory });
+			}
+
+			if (doc.select("iframe").size() > 0) {
+				containsFrames = true;
+				LOGGER.info("... contains iframes thus testing the following pages instead");
+				for (Element iframe : doc.select("iframe")) {
+					String baseUri = iframe.baseUri();
+					baseUri = baseUri
+							.substring(0, baseUri.lastIndexOf("/") + 1);
+					URL iframeUrl = new URL(baseUri + iframe.attr("src"));
+					if (Utils.looksLikeSuaCltIsIncluded(iframeUrl
+							.toExternalForm())) {
+						if (!urlsToBeTested.contains(iframeUrl)) {
+							LOGGER.info("... " + iframeUrl);
+							urlsToBeTested.add(iframeUrl);
+						}
+					} else {
+						LOGGER.info("... ignore because of no SUA code: "
+								+ iframeUrl);
+					}
+				}
+			}
+
+			if (containsFrames) {
+				if (framesHaveNoSUA && !urlsToBeTested.contains(url)) {
+					LOGGER.info("... adding " + url);
+					urlsToBeTested.add(url);
+				} else {
+					LOGGER.warn("... ignoring since test of nested SUA enabled pages is not supported: "
+							+ url);
+				}
+			} else {
+				LOGGER.info("... adding " + url);
+				urlsToBeTested.add(url);
 			}
 		}
+
+		for (URL urlToBeTested : urlsToBeTested) {
+			for (IWebDriverFactory webDriverFactory : webDrivers) {
+				if (UrlUtils.needsAuthentication(urlToBeTested, "GET")
+						&& !webDriverFactory.supportsAuthentication()) {
+					LOGGER.warn(urlToBeTested
+							+ " authentication. Since "
+							+ webDriverFactory
+							+ " does not support authentication this test case is skipped.");
+					continue;
+				}
+				parameters
+						.add(new Object[] { urlToBeTested, webDriverFactory });
+			}
+		}
+
+		localServer.stop();
 
 		return parameters;
 	}
 
-	public final int baseDelay;
+	public final static int baseDelay = TestConfiguration.getBaseDelay();
 	private final URL url;
 	private static WebDriver driver;
 
 	public WebDataCollectionTest(URL url, IWebDriverFactory webDriverFactory)
 			throws ConfigurationException {
-		baseDelay = TestConfiguration.getBaseDelay();
 		this.url = url;
 		WebDataCollectionTest.driver = webDriverFactory.create();
 	}
@@ -127,24 +203,14 @@ public class WebDataCollectionTest {
 	// TODO starten des Servers durch Unit Test damit in Testabdeckung
 
 	@Test
-	public void checkIfTestSiteSendsData() throws Exception {
+	public void checkIfSendsData() throws Exception {
+		String authUrl = UrlUtils.getAuthUrl(url, "GET").toExternalForm();
+
 		Dimension innerSize = new Dimension(800, 600);
-
 		SeleniumUtils.setInnerSize(driver, innerSize);
-		String url = this.url.toExternalForm();
-		if (this.url.getProtocol().equals("https")
-				&& this.url.getUserInfo() == null) {
-			String username = TestConfiguration.getUsername(this.url.getHost());
-			String password = TestConfiguration.getPassword(this.url.getHost());
-			if (username != null || password != null) {
-				String userInfo = (username != null ? username : "") + ":"
-						+ (password != null ? password : "");
-				url = UrlUtils.addUserInfo(this.url, userInfo).toExternalForm();
-			}
-		}
-		driver.get(url);
+		driver.get(authUrl);
 
-		DoclogRecordBuilder builder = new DoclogRecordBuilder().setUrl(url)
+		DoclogRecordBuilder builder = new DoclogRecordBuilder().setUrl(authUrl)
 				.setBounds(
 						new Rectangle(0, 0, innerSize.width, innerSize.height));
 
@@ -220,7 +286,7 @@ public class WebDataCollectionTest {
 		testUnknown(newFingerprint, builder);
 	}
 
-	private Fingerprint waitForFingerprint() {
+	private static Fingerprint waitForFingerprint() {
 		new WebDriverWait(driver, 3).until(ExpectedConditions
 				.presenceOfElementLocated(By.id("SUAsrv")));
 
@@ -251,7 +317,7 @@ public class WebDataCollectionTest {
 	 * @param builder
 	 * @throws Exception
 	 */
-	private void testReadyLog(IIdentifier identifier,
+	private static void testReadyLog(IIdentifier identifier,
 			DoclogRecordBuilder builder) throws Exception {
 		builder.setDateTime(DateTime.now().minus(150))
 				.setAction(DoclogAction.READY).setActionParameter(null);
@@ -259,20 +325,23 @@ public class WebDataCollectionTest {
 				.testDoclogRecord(identifier, -1, builder.create(), 1000);
 	}
 
-	private void testScrollVertically(IIdentifier identifier,
+	private static void testScrollVertically(IIdentifier identifier,
 			DoclogRecordBuilder builder) throws Exception {
 		SeleniumUtils.scrollTo(driver, 0, 200);
 		Thread.sleep(SCROLL_NOTIFICATION_DELAY);
 		builder.setDateTime(DateTime.now());
 		builder.setAction(DoclogAction.SCROLL).setActionParameter(null)
 				.setY(200);
-		Thread.sleep(baseDelay);
-		DoclogRESTUtils.testDoclogRecord(identifier, -1, builder.create(),
+		DoclogRecord[] doclogRecords = new WebDriverWait(driver,
+				TestConfiguration.maxWebDriverFluentWait())
+				.until(new DoclogRecordOfType(identifier, DoclogAction.SCROLL,
+						1));
+		DoclogRESTUtils.testDoclogRecord(builder.create(), doclogRecords[0],
 				baseDelay);
 	}
 
-	private void testResize(IIdentifier identifier, DoclogRecordBuilder builder)
-			throws Exception {
+	private static void testResize(IIdentifier identifier,
+			DoclogRecordBuilder builder) throws Exception {
 		SeleniumUtils.setInnerSize(driver, new Dimension(
 				builder.getWidth() - 100, builder.getHeight()));
 		Thread.sleep(RESIZE_NOTIFICATION_DELAY);
@@ -283,10 +352,13 @@ public class WebDataCollectionTest {
 				baseDelay);
 	}
 
-	private void testTyping(IIdentifier identifier,
+	private static void testTyping(IIdentifier identifier,
 			DoclogRecordBuilder builder, WebElement input, String testInput)
 			throws Exception {
 		int delayBetweenStrokes = 120; // 500 strokes per minute
+
+		// only test visible inputs
+		Assume.assumeTrue(input.isDisplayed());
 
 		input.click();
 
@@ -294,10 +366,14 @@ public class WebDataCollectionTest {
 		// an element gets focused but is not in the viewport. If that's the
 		// case we can expect an scroll event to be logged. We want to adapt our
 		// expectation to the new scroll position.
-		DoclogRecord[] implicitScrollDoclogRecord = new WebDriverWait(driver,
-				TestConfiguration.maxWebDriverFluentWait())
-				.until(new DoclogRecordOfType(identifier, DoclogAction.SCROLL,
-						1));
+		DoclogRecord[] implicitScrollDoclogRecord = null;
+		try {
+			implicitScrollDoclogRecord = new WebDriverWait(driver,
+					TestConfiguration.maxWebDriverFluentWait())
+					.until(new DoclogRecordOfType(identifier,
+							DoclogAction.SCROLL, 1));
+		} catch (TimeoutException e) {
+		}
 		if (implicitScrollDoclogRecord != null
 				&& implicitScrollDoclogRecord.length == 1) {
 			builder.setX(implicitScrollDoclogRecord[0].getBounds().getX());
@@ -340,8 +416,8 @@ public class WebDataCollectionTest {
 	}
 
 	@SuppressWarnings("unused")
-	private void testFocus(IIdentifier identifier, DoclogRecordBuilder builder)
-			throws Exception {
+	private static void testFocus(IIdentifier identifier,
+			DoclogRecordBuilder builder) throws Exception {
 		SeleniumUtils.executeScript(driver, "$(window).focus();");
 		builder.setDateTime(DateTime.now()).setAction(DoclogAction.FOCUS)
 				.setActionParameter(null);
@@ -350,8 +426,8 @@ public class WebDataCollectionTest {
 				baseDelay);
 	}
 
-	private void testBlur(IIdentifier identifier, DoclogRecordBuilder builder)
-			throws Exception {
+	private static void testBlur(IIdentifier identifier,
+			DoclogRecordBuilder builder) throws Exception {
 		SeleniumUtils.executeScript(driver, "$(window).blur();");
 		builder.setDateTime(DateTime.now()).setAction(DoclogAction.BLUR)
 				.setActionParameter(null);
@@ -360,8 +436,9 @@ public class WebDataCollectionTest {
 				baseDelay);
 	}
 
-	private void testLink(IIdentifier identifier, DoclogRecordBuilder builder,
-			WebElement linkElement) throws Exception {
+	private static void testLink(IIdentifier identifier,
+			DoclogRecordBuilder builder, WebElement linkElement)
+			throws Exception {
 		String linkUrl = linkElement.getAttribute("href");
 		boolean pageContainsFrames = Utils.pageContainsFrames(linkUrl);
 
@@ -379,10 +456,16 @@ public class WebDataCollectionTest {
 		}
 
 		if (UrlUtils.referencesSamePage(builder.getUrl(), linkUrl)) {
-			// = anker link, only scroll expected
-			expectedDoclogRecords.add(builder.setDateTime(DateTime.now())
-					.setAction(DoclogAction.SCROLL).setActionParameter(null)
-					.setScrollPosition(newX, newY).create());
+			if (linkUrl.contains("#") && !linkUrl.endsWith("#")) {
+				// = anker link, only scroll expected
+				expectedDoclogRecords.add(builder.setDateTime(DateTime.now())
+						.setAction(DoclogAction.SCROLL)
+						.setActionParameter(null).setScrollPosition(newX, newY)
+						.create());
+			} else {
+				// nothing expected
+				return;
+			}
 		} else if (Utils.looksLikeSuaCltIsIncluded(linkUrl)) {
 			// = different page with SUA
 			String urlToCheck = pageContainsFrames ? linkUrl : null;
@@ -452,8 +535,8 @@ public class WebDataCollectionTest {
 		}
 	}
 
-	private void testUnknown(IIdentifier identifier, DoclogRecordBuilder builder)
-			throws Exception {
+	private static void testUnknown(IIdentifier identifier,
+			DoclogRecordBuilder builder) throws Exception {
 		SeleniumUtils.executeScript(driver, "SUAtestLog(\""
 				+ identifier.toString().substring(1)
 				+ "\", \"IamAnUnknownActionType-IamTheParameter\");");
@@ -474,6 +557,7 @@ public class WebDataCollectionTest {
 
 	@After
 	public void after() throws Exception {
-		driver.quit();
+		if (driver != null)
+			driver.quit();
 	}
 }

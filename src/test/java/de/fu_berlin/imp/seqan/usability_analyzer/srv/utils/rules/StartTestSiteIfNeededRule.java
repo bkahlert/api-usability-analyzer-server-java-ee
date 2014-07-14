@@ -15,8 +15,7 @@ public class StartTestSiteIfNeededRule extends ExternalResource {
 			.getLogger(StartTestSiteIfNeededRule.class);
 	private TestSiteServer testSiteServer;
 
-	@Override
-	protected void before() {
+	public void start() {
 		boolean serverAlreadyStarted = false;
 		try {
 			HttpURLConnection connection = (HttpURLConnection) new URL(
@@ -36,10 +35,9 @@ public class StartTestSiteIfNeededRule extends ExternalResource {
 								+ TestSiteServer.class.getSimpleName(), e);
 			}
 		}
-	};
+	}
 
-	@Override
-	protected void after() {
+	public void stop() {
 		if (testSiteServer != null) {
 			try {
 				testSiteServer.stop();
@@ -49,5 +47,15 @@ public class StartTestSiteIfNeededRule extends ExternalResource {
 								+ TestSiteServer.class.getSimpleName(), e);
 			}
 		}
+	}
+
+	@Override
+	protected void before() {
+		start();
+	};
+
+	@Override
+	protected void after() {
+		stop();
 	};
 }

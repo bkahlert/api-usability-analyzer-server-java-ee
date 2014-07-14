@@ -53,7 +53,6 @@ public class TestConfiguration {
 		try {
 			return new PropertiesConfiguration(url);
 		} catch (ConfigurationException e) {
-			System.err.println("Error reading credential properties");
 			return null;
 		}
 	}
@@ -66,7 +65,8 @@ public class TestConfiguration {
 	 * @return
 	 */
 	public static String getUsername(String domain) {
-		return getCredentials(domain).getString("username");
+		Configuration credentials = getCredentials(domain);
+		return credentials != null ? credentials.getString("username") : null;
 	}
 
 	/**
@@ -77,7 +77,8 @@ public class TestConfiguration {
 	 * @return
 	 */
 	public static String getPassword(String domain) {
-		return getCredentials(domain).getString("password");
+		Configuration credentials = getCredentials(domain);
+		return credentials != null ? credentials.getString("password") : null;
 	}
 
 	public static URL[] getSUAsrvURLs() throws ConfigurationException,
@@ -182,8 +183,13 @@ public class TestConfiguration {
 	 * @return
 	 * @throws ConfigurationException
 	 */
-	public static int getBaseDelay() throws ConfigurationException {
-		return getModeProperties().getInt("SUAclt.web.baseDelay");
+	public static int getBaseDelay() {
+		try {
+			return getModeProperties().getInt("SUAclt.web.baseDelay");
+		} catch (ConfigurationException e) {
+			e.printStackTrace();
+			return 999;
+		}
 	}
 
 	/**
@@ -195,6 +201,6 @@ public class TestConfiguration {
 	 * @throws ConfigurationException
 	 */
 	public static int maxWebDriverFluentWait() throws ConfigurationException {
-		return 5;
+		return 10;
 	}
 }

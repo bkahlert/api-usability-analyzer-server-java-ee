@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -13,6 +15,30 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
 public class UrlUtils {
+
+	/**
+	 * Checks if the given URL needs authentication and returns a new URL that
+	 * may contain authentication information.
+	 * 
+	 * @param url
+	 * @param method
+	 * @return
+	 * @throws IOException
+	 */
+	public static URL getAuthUrl(URL url, String method) throws IOException {
+		String authUrl = url.toExternalForm();
+		if (UrlUtils.needsAuthentication(url, method)
+				&& url.getUserInfo() == null) {
+			String username = TestConfiguration.getUsername(url.getHost());
+			String password = TestConfiguration.getPassword(url.getHost());
+			if (username != null || password != null) {
+				String userInfo = (username != null ? username : "") + ":"
+						+ (password != null ? password : "");
+				authUrl = UrlUtils.addUserInfo(url, userInfo).toExternalForm();
+			}
+		}
+		return new URL(authUrl);
+	}
 
 	public static URL addUserInfo(URL url, String userInfo)
 			throws MalformedURLException {
@@ -124,6 +150,23 @@ public class UrlUtils {
 				"http://bkahlert.com/"));
 		assertFalse(referencesSamePage("http://bkahlert.com",
 				"http://google.com"));
+	}
+
+	/**
+	 * Returns true if an authentication is needed if the given {@link URL} is
+	 * accessed with the given method.
+	 * 
+	 * @param url
+	 * @param method
+	 * @return
+	 * @throws IOException
+	 */
+	public static boolean needsAuthentication(URL url, String method)
+			throws IOException {
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod(method);
+		int responseCode = connection.getResponseCode();
+		return responseCode == 401;
 	}
 
 }

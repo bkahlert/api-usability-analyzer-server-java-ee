@@ -1,1 +1,4 @@
 /usability_analyzer.srv.launch
+target
+chromedriver.log
+derby.log
