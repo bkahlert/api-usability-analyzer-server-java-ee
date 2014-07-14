@@ -78,6 +78,7 @@ The production configuration file can be directly changed at system.config.
 First the unit tests can be run without a server by executing UnitTests.java.
 
 Second the running system can be tested in two flavors:
+
 1. The locally running server (that needs to be started separately) can be tested using IntegrationTests.launch. The corresponding configuration can be found in src/test/resources/de/fu_berlin/imp/apiua/server/java-ee/integration_test.properties.  
 ![Integration Test](images/integration_test.png)
 2. The globally running production server can be tested using SystemTests. The corresponding configuration can be found in src/test/resources/de/fu_berlin/imp/apiua/server/java-ee/system_test.properties.  
