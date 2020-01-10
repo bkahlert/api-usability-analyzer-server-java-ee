@@ -10,7 +10,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<vaadin.version>6.7.1</vaadin.version>
+		<vaadin.version>6.8.18</vaadin.version>
 		<vaadin.productionmode>true</vaadin.productionmode>
 		<gwt.version>2.5.1</gwt.version>
 		<config.name>system</config.name>
